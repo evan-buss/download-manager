@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Dapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace DownloadManager.Controllers
 {
@@ -17,10 +20,32 @@ namespace DownloadManager.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IConfiguration configuration;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            this.configuration = configuration;
+        }
+
+        [HttpGet("db")]
+        public IEnumerable<string> TestDb()
+        {
+            using var db = new SqliteConnection(configuration.GetConnectionString("Context"));
+            return db.Query<string>("select Username from Users");
+        }
+
+        [HttpGet("createname")]
+        public async Task<IActionResult> AddName([FromQuery] string name)
+        {
+            using var db = new SqliteConnection(configuration.GetConnectionString("Context"));
+            var modified = await db.ExecuteAsync("INSERT INTO Users (Username, Password, Salt) VALUES(@Name, 'password', 'salt')", new { Name = name }).ConfigureAwait(false);
+            if (modified == 1)
+            {
+                return Ok(TestDb());
+            }
+
+            return BadRequest();
         }
 
         [HttpGet]

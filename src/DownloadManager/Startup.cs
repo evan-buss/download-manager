@@ -1,8 +1,13 @@
+using Dapper;
+using FluentMigrator;
+using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RequestLoggerMiddleware;
 
 namespace DownloadManager
 {
@@ -19,6 +24,12 @@ namespace DownloadManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddFluentMigratorCore().ConfigureRunner(rb =>
+            {
+                rb.AddSQLite();
+                rb.WithGlobalConnectionString(Configuration.GetConnectionString("Context"));
+                rb.ScanIn(typeof(Migrations.AddUsersTable).Assembly).For.Migrations();
+            });
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -28,11 +39,14 @@ namespace DownloadManager
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner migrationRunner)
         {
+            migrationRunner.MigrateUp();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseRequestLogger(options => options.EnableColor());
             }
             else
             {
