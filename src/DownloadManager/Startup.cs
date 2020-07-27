@@ -1,13 +1,15 @@
-using Dapper;
-using FluentMigrator;
-using FluentMigrator.Runner;
+using DownloadManager.Entities;
+using DownloadManager.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using RequestLoggerMiddleware;
+using System.Text;
 
 namespace DownloadManager
 {
@@ -23,25 +25,33 @@ namespace DownloadManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-            services.AddFluentMigratorCore().ConfigureRunner(rb =>
-            {
-                rb.AddSQLite();
-                rb.WithGlobalConnectionString(Configuration.GetConnectionString("Context"));
-                rb.ScanIn(typeof(Migrations.AddUsersTable).Assembly).For.Migrations();
-            });
+            services.AddDbContext<Context>(options => options.UseSqlite(Configuration.GetConnectionString("Context")));
 
-            // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
+            services.AddServices();
+
+            // Not sure if this is necessary...
+            services.AddControllersWithViews();
+            services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/public");
+
+            services.AddAuthentication(options =>
             {
-                configuration.RootPath = "ClientApp/public";
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Secret"])),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                };
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner migrationRunner)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Context context)
         {
-            migrationRunner.MigrateUp();
+            context.Database.Migrate();
 
             if (env.IsDevelopment())
             {
@@ -60,6 +70,8 @@ namespace DownloadManager
             app.UseSpaStaticFiles();
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

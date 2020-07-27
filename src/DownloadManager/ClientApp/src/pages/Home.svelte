@@ -22,7 +22,7 @@
   }
 
   function logout() {
-    user.set(false);
+    user.logout();
     push("/login");
   }
 </script>

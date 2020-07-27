@@ -1,7 +1,7 @@
 export async function fetchAllUsers(): Promise<string[]> {
-  return await fetch(
-    `${window.location.origin}/weatherforecast/db`
-  ).then((response) => response.json());
+  return await fetch(`${window.location.origin}/weatherforecast/db`, {
+    method: "GET",
+  }).then((response) => response.json());
 }
 
 export async function createUser(name: string): Promise<string[]> {

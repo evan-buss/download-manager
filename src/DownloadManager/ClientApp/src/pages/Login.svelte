@@ -6,9 +6,7 @@
   let password: string;
 
   function handleSubmit(): void {
-    console.log("before");
-    user.set(true);
-    console.log("after");
+    user.login();
     push("/");
   }
 </script>
@@ -59,11 +57,11 @@
     </div>
     <div class="flex items-center justify-center py-4 bg-gray-100 text-center">
       <h1 class="text-gray-600 text-sm">Dont`t have an account?</h1>
-      <a
-        href="#"
+      <div
+        on:click={() => console.log(user.test())}
         class="text-blue-600 font-bold mx-2 text-sm hover:text-blue-500">
         Register
-      </a>
+      </div>
     </div>
   </div>
 </main>

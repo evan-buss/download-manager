@@ -1,36 +1,36 @@
-import { writable, Writable } from "svelte/store";
+import { writable } from "svelte/store";
 
 export interface User {
-  username: string;
-  isLoggedIn: boolean;
+  accessToken: string;
+  refreshToken: string;
 }
 
-export const user = writable<boolean>(false);
+function createCurrentUser() {
+  const { subscribe, set, update } = writable<User>({
+    accessToken: null,
+    refreshToken: null,
+  });
 
-// function createCurrentUser() {
-//   const { subscribe, set, update } = writable<User>({
-//     username: null,
-//     isLoggedIn: false,
-//   });
+  return {
+    subscribe,
+    login: () => {
+      update((user) => {
+        user.accessToken = "token";
+        user.refreshToken = "refreshToken";
+        return user;
+      });
+    },
+    logout: () => {
+      update((user) => {
+        user = null;
+        return user;
+      });
+    },
+  };
+}
 
-//   return {
-//     subscribe,
-//     login: () => {
-//       update((user) => {
-//         user.isLoggedIn = true;
-//         return user;
-//       });
-//     },
-//     logout: () => {
-//       update((user) => {
-//         user.isLoggedIn = false;
-//         return user;
-//       });
-//     },
-//     reset: () => {
-//       set({ isLoggedIn: false, username: null });
-//     },
-//   };
-// }
+async function login(): Promise<boolean> {
+  await fetch();
+}
 
-// export const user = createCurrentUser();
+export const user = createCurrentUser();
