@@ -1,4 +1,4 @@
-﻿namespace DownloadManager.Controllers
+﻿namespace DownloadManager.Models
 {
     /// <summary>
     /// TokenResponse is sent when a user successfully authenticates

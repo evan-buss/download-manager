@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DownloadManager.Controllers
+namespace DownloadManager.Models
 {
     /// <summary>
     /// LoginRequest sent when a user logs in or registers a new account.

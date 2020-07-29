@@ -1,5 +1,4 @@
-﻿using DownloadManager.Controllers;
-using DownloadManager.Entities;
+﻿using DownloadManager.Entities;
 using DownloadManager.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;

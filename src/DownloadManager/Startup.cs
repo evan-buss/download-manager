@@ -1,15 +1,12 @@
 using DownloadManager.Entities;
 using DownloadManager.Extensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using RequestLoggerMiddleware;
-using System.Text;
+using Serilog;
 
 namespace DownloadManager
 {
@@ -30,22 +27,12 @@ namespace DownloadManager
             services.AddServices();
 
             // Not sure if this is necessary...
-            services.AddControllersWithViews();
+            services.AddControllers();
             services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/public");
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Secret"])),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                };
-            });
+            services.AddJwtAuthentication(Configuration["Secret"]);
+
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,7 +43,6 @@ namespace DownloadManager
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseRequestLogger(options => options.EnableColor());
             }
             else
             {
@@ -69,6 +55,8 @@ namespace DownloadManager
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+            app.UseSerilogRequestLogging();
+
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -78,6 +66,8 @@ namespace DownloadManager
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+
+                endpoints.MapHealthChecks("/api/health");
             });
 
             app.UseSpa(spa =>

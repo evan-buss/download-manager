@@ -1,4 +1,4 @@
-﻿using DownloadManager.Controllers;
+﻿using DownloadManager.Models;
 using System.Threading.Tasks;
 
 namespace DownloadManager.Services

@@ -1,0 +1,27 @@
+2020-07-28 22:57:00.882 -04:00 [INF] Starting up
+2020-07-28 22:57:01.796 -04:00 [INF] Entity Framework Core 3.1.6 initialized 'Context' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2020-07-28 22:57:01.962 -04:00 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2020-07-28 22:57:01.969 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2020-07-28 22:57:01.986 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2020-07-28 22:57:01.998 -04:00 [INF] No migrations were applied. The database is already up to date.
+2020-07-28 22:57:02.088 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2020-07-28 22:57:02.088 -04:00 [INF] Hosting environment: Development
+2020-07-28 22:57:02.088 -04:00 [INF] Content root path: C:\Users\evanb\Desktop\evan-buss\download-manager\src\DownloadManager
+2020-07-28 22:57:02.230 -04:00 [INF] Entity Framework Core 3.1.6 initialized 'Context' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2020-07-28 22:57:02.397 -04:00 [INF] Executed DbCommand (6ms) [Parameters=[@__model_Username_0='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."Id", "u"."Created", "u"."Password", "u"."RefreshToken", "u"."RefreshTokenExpiration", "u"."Salt", "u"."Updated", "u"."Username"
+FROM "Users" AS "u"
+WHERE "u"."Username" = @__model_Username_0
+LIMIT 2
+2020-07-28 22:57:02.495 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[@p7='?', @p0='?', @p1='?' (Size = 44), @p2='?' (Size = 24), @p3='?', @p4='?' (Size = 24), @p5='?', @p6='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "Created" = @p0, "Password" = @p1, "RefreshToken" = @p2, "RefreshTokenExpiration" = @p3, "Salt" = @p4, "Updated" = @p5, "Username" = @p6
+WHERE "Id" = @p7;
+SELECT changes();
+2020-07-28 22:57:02.612 -04:00 [INF] HTTP POST /api/auth/login responded 200 in 466.2349 ms
+2020-07-28 22:57:06.233 -04:00 [ERR] This is inside the get request
+2020-07-28 22:57:06.238 -04:00 [INF] HTTP GET /weatherforecast responded 200 in 47.4486 ms

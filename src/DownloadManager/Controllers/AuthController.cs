@@ -1,4 +1,6 @@
+using DownloadManager.Models;
 using DownloadManager.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -45,6 +47,7 @@ namespace DownloadManager.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> LogOut()
         {
