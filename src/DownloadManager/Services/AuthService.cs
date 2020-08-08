@@ -1,6 +1,8 @@
-﻿using DownloadManager.Entities;
+﻿using DownloadManager.Data.Entities;
+using DownloadManager.Entities;
 using DownloadManager.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
@@ -19,11 +21,13 @@ namespace DownloadManager.Services
     {
         private readonly Context _context;
         private readonly IConfiguration _config;
+        private readonly PasswordHasher<string> _passwordHasher;
 
         public AuthService(Context context, IConfiguration config)
         {
             _context = context;
             _config = config;
+            _passwordHasher = new PasswordHasher<string>();
         }
 
         public async Task<TokenResponse> LogIn(LoginRequest model)
@@ -31,7 +35,7 @@ namespace DownloadManager.Services
             var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == model.Username).ConfigureAwait(false);
             if (user == null) return null;
 
-            if (!VerifyPassword(model.Password, user.Password, user.Salt)) return null;
+            if (!VerifyPassword(model.Password, user.Password)) return null;
 
             var refreshToken = GenerateRandomToken(128);
 
@@ -67,15 +71,13 @@ namespace DownloadManager.Services
                 return null;
             }
 
-            var salt = GenerateRandomToken(128);
             var refreshToken = GenerateRandomToken(128);
-            var password = HashPassword(model.Password, salt);
+            var password = _passwordHasher.HashPassword(null, model.Password);
 
             var user = new User
             {
                 Username = model.Username,
                 Password = password,
-                Salt = salt,
                 RefreshToken = refreshToken,
                 RefreshTokenExpiration = DateTime.Now.AddMinutes(10)
             };
@@ -110,20 +112,10 @@ namespace DownloadManager.Services
             return tokenHandler.WriteToken(token);
         }
 
-        private string HashPassword(string password, string salt)
+        private bool VerifyPassword(string password, string hashedPassword)
         {
-            // derive a 256-bit subkey (use HMACSHA1 with 10,000 iterations)
-            return Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: password,
-                salt: Convert.FromBase64String(salt),
-                prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 10_000,
-                numBytesRequested: 256 / 8));
-        }
-
-        private bool VerifyPassword(string password, string hash, string salt)
-        {
-            return HashPassword(password, salt) == hash;
+            var success = _passwordHasher.VerifyHashedPassword(null, hashedPassword, password);
+            return success == PasswordVerificationResult.Success;
         }
 
         private string GenerateRandomToken(int bits)

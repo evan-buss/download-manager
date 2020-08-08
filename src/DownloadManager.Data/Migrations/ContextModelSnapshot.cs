@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace DownloadManager.Migrations
+namespace DownloadManager.Data.Migrations
 {
     [DbContext(typeof(Context))]
     partial class ContextModelSnapshot : ModelSnapshot
@@ -16,7 +16,7 @@ namespace DownloadManager.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.6");
 
-            modelBuilder.Entity("DownloadManager.Models.User", b =>
+            modelBuilder.Entity("DownloadManager.Data.Entities.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -32,9 +32,6 @@ namespace DownloadManager.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("RefreshTokenExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Salt")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("Updated")

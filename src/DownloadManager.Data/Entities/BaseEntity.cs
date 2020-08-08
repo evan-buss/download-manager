@@ -1,6 +1,6 @@
 using System;
 
-namespace DownloadManager.Models
+namespace DownloadManager.Data.Entities
 {
     public class BaseEntity
     {

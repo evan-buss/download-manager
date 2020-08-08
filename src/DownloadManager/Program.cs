@@ -10,15 +10,17 @@ namespace DownloadManager
     {
         public static void Main(string[] args)
         {
+            var basedir = AppContext.BaseDirectory;
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
-                .WriteTo.File("log.txt",
+                .WriteTo.File($"{basedir}/logs/log.txt",
                     rollingInterval: RollingInterval.Day,
                     rollOnFileSizeLimit: true,
-                    retainedFileCountLimit: 10)
-                .WriteTo.Seq("http://localhost:5341", apiKey: "prgXEEIJxuW0lllZhUM9")
+                    retainedFileCountLimit: 10,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] [{SourceContext}] {Message}{NewLine}{Exception}")
+                .WriteTo.Seq("http://192.168.1.222:5341", apiKey: "RC6btTIo3FipMb3vGWsG")
                 .CreateLogger();
 
             try

@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace DownloadManager.Migrations
+namespace DownloadManager.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20200727033330_Init")]
+    [Migration("20200808171751_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace DownloadManager.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.6");
 
-            modelBuilder.Entity("DownloadManager.Models.User", b =>
+            modelBuilder.Entity("DownloadManager.Data.Entities.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,9 +34,6 @@ namespace DownloadManager.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("RefreshTokenExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Salt")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("Updated")

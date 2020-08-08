@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace DownloadManager.Migrations
+namespace DownloadManager.Data.Migrations
 {
     public partial class Init : Migration
     {
@@ -17,7 +17,6 @@ namespace DownloadManager.Migrations
                     Updated = table.Column<DateTime>(nullable: true),
                     Username = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
-                    Salt = table.Column<string>(nullable: true),
                     RefreshToken = table.Column<string>(nullable: true),
                     RefreshTokenExpiration = table.Column<DateTime>(nullable: true)
                 },
