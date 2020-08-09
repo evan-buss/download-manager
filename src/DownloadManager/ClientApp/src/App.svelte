@@ -4,25 +4,22 @@
 
   import Login from "./pages/Login.svelte";
   import Home from "./pages/Home.svelte";
+  import Navbar from "./components/Navbar.svelte";
 
   function conditionsFailed(event: any): void {
-    replace("/login");
+    replace(event.detail.redirectUrl);
   }
-
-  $: isLoggedIn = $user.refreshToken && $user.accessToken;
-
-  // $: let isLoggedIn = user.
 
   const routes = {
     "/": wrap(Home, (detail: any) => {
-      console.log($user);
-      return isLoggedIn;
+      detail.redirectUrl = "/login";
+      return user.isLoggedIn();
     }),
-    "/login": Login,
+    "/login": wrap(Login, (detail: any) => {
+      detail.redirectUrl = "/";
+      return !user.isLoggedIn();
+    }),
   };
 </script>
 
 <Router {routes} on:conditionsFailed={conditionsFailed} />
-
-<!-- Hook up actual user store. Store username, token, refresh token -->
-<!-- Hook up stronly typed configuration. Need a way to determine if we are running in a conatiner or not -->

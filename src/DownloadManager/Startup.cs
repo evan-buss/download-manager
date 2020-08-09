@@ -32,6 +32,16 @@ namespace DownloadManager
 
             services.AddJwtAuthentication(Configuration["Secret"]);
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             services.AddHealthChecks();
         }
 
@@ -51,6 +61,7 @@ namespace DownloadManager
                 app.UseHsts();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
@@ -58,6 +69,9 @@ namespace DownloadManager
             app.UseSerilogRequestLogging();
 
             app.UseRouting();
+
+            app.UseCors();
+
             app.UseAuthentication();
             app.UseAuthorization();
 

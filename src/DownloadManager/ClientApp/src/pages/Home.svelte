@@ -1,51 +1,41 @@
 <script lang="ts">
-  import { fetchAllUsers, createUser } from "../services/users.service";
-  import { onMount } from "svelte";
-  import { user } from "../stores/auth.store";
-  import { push } from "svelte-spa-router";
+  import DownloadCard from "../components/DownloadCard.svelte";
+  import { tryDecodeLink } from "../services/download-manager.service";
+  import Navbar from "../components/Navbar.svelte";
 
-  export let name: string = "Evan";
+  let items: string[] = ["test", "test2"];
+  let downloadLink: string;
 
-  let newName: string;
-  let userList: string[] = [];
-
-  onMount(() => {
-    loadUserList();
-  });
-
-  async function createUserHandler() {
-    userList = await createUser(newName);
-  }
-
-  async function loadUserList() {
-    userList = await fetchAllUsers();
-  }
-
-  function logout() {
-    user.logout();
-    push("/login");
+  function onBlur() {
+    downloadLink = tryDecodeLink(downloadLink);
   }
 </script>
 
-<h1 class="font-mono text-4xl text-gray-300">Welcome home {name}</h1>
-
-<div class="flex flex-row space-x-4">
-  <input
-    type="text"
-    class="border border-gray-600 shadow-md"
-    bind:value={newName} />
-  <button
-    class="rounded-md bg-gray-400 shadow-md p-2"
-    on:click={createUserHandler}>
-    Submit
-  </button>
-  <button
-    class="rounded-lg bg-gray-200 p-4 border shadow-lg border-blue-400"
-    on:click={logout}>
-    Logout
-  </button>
+<Navbar />
+<div class="flex justify-center w-screen mt-20">
+  <main class="flex-col items-center w-1/2">
+    <div class="flex flex-row justify-center">
+      <input
+        class="w-full mt-2 py-2 px-4 bg-white text-gray-700 rounded
+        appearance-none placeholder-gray-500 focus:outline-none focus:bg-white
+        mr-4 border-2 border-black hover:shadow-sm"
+        type="text"
+        bind:value={downloadLink}
+        on:blur={onBlur}
+        placeholder="Download Link" />
+      <button
+        class="mt-2 py-2 px-4 bg-white text-gray-700 rounded block
+        appearance-none placeholder-gray-500 border-2 border-teal-300
+        focus:outline-none hover:bg-teal-400 hover:text-white">
+        Submit
+      </button>
+    </div>
+    <div class="mx-auto">
+      {#each items as item}
+        <DownloadCard {item} />
+      {:else}
+        <p class="text-white">No downloads.</p>
+      {/each}
+    </div>
+  </main>
 </div>
-
-{#each userList as name}
-  <h3 class="text-white">{name}</h3>
-{/each}

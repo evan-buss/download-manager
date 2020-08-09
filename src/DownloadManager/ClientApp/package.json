@@ -31,6 +31,8 @@
     "typescript": "^3.9.3"
   },
   "dependencies": {
+    "axios": "^0.19.2",
+    "jwt-decode": "github:auth0/jwt-decode",
     "sirv-cli": "^1.0.0",
     "svelte-spa-router": "^2.2.0"
   }
