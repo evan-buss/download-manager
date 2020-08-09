@@ -5,6 +5,7 @@
 
   let username: string = "";
   let password: string = "";
+  let passwordTouched = false;
   let loginFailed = false;
 
   async function handleSubmit(): Promise<void> {
@@ -14,8 +15,8 @@
     else loginFailed = true;
   }
 
-  $: invalidUsername = username.includes("evan");
-  $: invalidPassword = password.length < 8;
+  let invalidUsername = false;
+  $: invalidPassword = password.length < 8 && passwordTouched;
 </script>
 
 <main class="h-screen flex justify-center items-center">
@@ -29,7 +30,7 @@
     class="bg-white w-full max-w-sm rounded-lg shadow-lg hover:shadow-xl
     overflow-hidden mx-auto">
     <div class="py-4 px-6">
-      <div class="text-center font-bold text-gray-700 text-3xl">
+      <div class="text-center font-bold text-black text-3xl">
         Download Manager
       </div>
       <div class="mt-1 text-center text-gray-600">Login or create account</div>
@@ -38,35 +39,31 @@
           <input
             bind:value={username}
             placeholder="Username"
-            class="w-full mt-2 py-2 px-4 bg-gray-100 text-gray-700 border
-            border-gray-300 rounded block appearance-none placeholder-gray-500
-            focus:outline-none focus:bg-white" />
+            class="w-full mt-2 py-2 px-4 bg-gray-100 text-gray-700 border-2
+            border-gray-400 rounded block appearance-none placeholder-gray-500
+            focus:outline-none focus:bg-white focus:border-black" />
           {#if invalidUsername}
-            <p class="text-red-600">Invalid username.</p>
+            <p class="text-red-600 mt-1">Invalid username.</p>
           {/if}
         </div>
         <div class="mt-4 w-full">
           <input
             bind:value={password}
+            on:blur={() => (passwordTouched = true)}
             type="password"
             placeholder="Password"
-            class="w-full mt-2 py-2 px-4 bg-gray-100 text-gray-700 border
-            border-gray-300 rounded block appearance-none placeholder-gray-500
-            focus:outline-none focus:bg-white" />
+            class="w-full mt-2 py-2 px-4 bg-gray-100 text-gray-700 border-2
+            border-gray-400 rounded block appearance-none placeholder-gray-500
+            focus:outline-none focus:bg-white focus:border-black" />
           {#if invalidPassword}
-            <p class="text-red-600">Invalid password.</p>
+            <p class="text-red-600 mt-1">Invalid password.</p>
           {/if}
         </div>
-        <div class="flex justify-between items-center mt-6">
-          <a href="#" class="text-gray-600 text-sm hover:text-gray-500">
+        <div class="flex justify-between items-center mt-1">
+          <a href="/reset" class="text-gray-600 text-sm hover:text-gray-500">
             Forgot Password?
           </a>
-          <button
-            type="submit"
-            class="py-2 px-4 bg-gray-700 text-white rounded hover:bg-gray-600
-            focus:outline-none">
-            Login
-          </button>
+          <button type="submit" class="btn">Login</button>
         </div>
       </form>
     </div>
@@ -74,7 +71,7 @@
       <h1 class="text-gray-600 text-sm">Dont`t have an account?</h1>
       <div
         on:click={() => console.log('wowee')}
-        class="text-blue-600 font-bold mx-2 text-sm hover:text-blue-500">
+        class="text-teal-400 font-bold mx-2 text-sm hover:text-blue-500">
         Register
       </div>
     </div>

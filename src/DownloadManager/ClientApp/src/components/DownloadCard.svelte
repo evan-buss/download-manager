@@ -8,8 +8,7 @@
   <div class="flex items-center justify-center px-4 py-4 w-full">
     <div class="w-full">
       <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-gray-900 -mt-1">{item}</h2>
-
+        <h2 class="text-lg font-semibold text-gray-900 -mt-1">{download}</h2>
         <p
           class="rounded-sm px-1 hover:shadow-md text-xs text-white bg-red-600">
           MEGA

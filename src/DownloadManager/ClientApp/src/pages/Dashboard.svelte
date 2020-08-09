@@ -2,10 +2,6 @@
   import DownloadCard from "../components/DownloadCard.svelte";
   import { tryDecodeLink } from "../services/download-manager.service";
   import Navbar from "../components/Navbar.svelte";
-  import Button from "../components/Button.svelte";
-  import type Login from "./Login.svelte";
-  import type Login from "./Login.svelte";
-  import type Login from "./Login.svelte";
 
   let downloads: string[] = [];
   let downloadLink: string;
@@ -49,7 +45,7 @@
         bind:value={downloadLink}
         on:blur={onBlur}
         placeholder="Download Link" />
-      <Button {disabled}>Submit</Button>
+      <button type="submit" class="btn" {disabled}>Download</button>
     </form>
     <div class="mx-auto">
       {#each downloads as download}
