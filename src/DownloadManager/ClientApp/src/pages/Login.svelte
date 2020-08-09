@@ -3,8 +3,8 @@
   import { push } from "svelte-spa-router";
   import AlertMessage from "../components/AlertMessage.svelte";
 
-  let username: string;
-  let password: string;
+  let username: string = "";
+  let password: string = "";
   let loginFailed = false;
 
   async function handleSubmit(): Promise<void> {
@@ -13,6 +13,9 @@
     if (success) push("/");
     else loginFailed = true;
   }
+
+  $: invalidUsername = username.includes("evan");
+  $: invalidPassword = password.length < 8;
 </script>
 
 <main class="h-screen flex justify-center items-center">
@@ -27,7 +30,7 @@
     overflow-hidden mx-auto">
     <div class="py-4 px-6">
       <div class="text-center font-bold text-gray-700 text-3xl">
-        Mega Server
+        Download Manager
       </div>
       <div class="mt-1 text-center text-gray-600">Login or create account</div>
       <form on:submit={handleSubmit}>
@@ -38,6 +41,9 @@
             class="w-full mt-2 py-2 px-4 bg-gray-100 text-gray-700 border
             border-gray-300 rounded block appearance-none placeholder-gray-500
             focus:outline-none focus:bg-white" />
+          {#if invalidUsername}
+            <p class="text-red-600">Invalid username.</p>
+          {/if}
         </div>
         <div class="mt-4 w-full">
           <input
@@ -47,6 +53,9 @@
             class="w-full mt-2 py-2 px-4 bg-gray-100 text-gray-700 border
             border-gray-300 rounded block appearance-none placeholder-gray-500
             focus:outline-none focus:bg-white" />
+          {#if invalidPassword}
+            <p class="text-red-600">Invalid password.</p>
+          {/if}
         </div>
         <div class="flex justify-between items-center mt-6">
           <a href="#" class="text-gray-600 text-sm hover:text-gray-500">

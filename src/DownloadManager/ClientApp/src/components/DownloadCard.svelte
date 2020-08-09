@@ -1,9 +1,9 @@
 <script lang="ts">
-  export let item: string;
+  export let download: string;
 </script>
 
 <div
-  class="flex bg-white shadow hover:shadow-md cursor-pointer rounded-lg mx-4
+  class="flex bg-white shadow hover:shadow-md cursor-pointer rounded-lg
   md:mx-auto my-6">
   <div class="flex items-center justify-center px-4 py-4 w-full">
     <div class="w-full">

@@ -28,15 +28,16 @@ function createCurrentUser() {
       return false;
     },
     logout: () => {
-      update((user) => {
-        user = null;
-        return user;
-      });
+      localStorage.removeItem("access-token");
+      localStorage.removeItem("refresh-token");
+      set(null);
     },
     isLoggedIn: () => {
       let user: User;
       subscribe((curr) => (user = curr));
-      return user.accessToken !== null && user.refreshToken !== null;
+      return (
+        user !== null && user.accessToken !== null && user.refreshToken !== null
+      );
     },
   };
 }
@@ -55,7 +56,8 @@ async function login(
       localStorage.setItem("refresh-token", tokens.data.refreshToken);
       return tokens.data;
     })
-    .catch(() => {
+    .catch((error) => {
+      console.log(error);
       console.log("catching");
       return null;
     });
