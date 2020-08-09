@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte/internal";
   import { user } from "../stores/auth.store";
-  import { replace } from "svelte-spa-router";
+  import { link, replace } from "svelte-spa-router";
 
   let isOpen = false;
 
@@ -47,7 +47,11 @@
     <div class="absolute right-0 py-2 w-40 bg-white shadow-lg rounded-lg">
       <!-- <p class="text-gray-700 px-4 py-2 hover:bg-teal-300">Link1</p> -->
 
-      <div class="text-gray-700 px-4 py-2 hover:bg-teal-300 cursor-pointer">
+      <a
+        href="/settings"
+        use:link
+        class="inline-block w-full text-gray-700 px-4 py-2 hover:bg-teal-300
+        cursor-pointer">
         <svg
           viewBox="0 0 20 20"
           fill="currentColor"
@@ -59,7 +63,7 @@
             3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
         </svg>
         Settings
-      </div>
+      </a>
       <div
         class="text-gray-700 px-4 py-2 hover:bg-teal-300 cursor-pointer"
         on:click={logOut}>

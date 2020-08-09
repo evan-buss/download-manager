@@ -17,9 +17,10 @@
 
   let invalidUsername = false;
   $: invalidPassword = password.length < 8 && passwordTouched;
+  $: disabled = invalidUsername || invalidPassword || !passwordTouched;
 </script>
 
-<main class="h-screen flex justify-center items-center">
+<main class="h-screen flex justify-center items-center bg-gray-700">
   {#if loginFailed}
     <div class="fixed top-0 mt-6">
       <AlertMessage type="error" message="Invalid credentials. Login Failed." />
@@ -34,7 +35,7 @@
         Download Manager
       </div>
       <div class="mt-1 text-center text-gray-600">Login or create account</div>
-      <form on:submit={handleSubmit}>
+      <form on:submit|once={handleSubmit}>
         <div class="mt-4 w-full">
           <input
             bind:value={username}
@@ -63,7 +64,7 @@
           <a href="/reset" class="text-gray-600 text-sm hover:text-gray-500">
             Forgot Password?
           </a>
-          <button type="submit" class="btn">Login</button>
+          <button type="submit" {disabled} class="btn">Login</button>
         </div>
       </form>
     </div>

@@ -1,5 +1,6 @@
 using DownloadManager.Entities;
 using DownloadManager.Extensions;
+using DownloadManager.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using DownloadManager.Services;
 
 namespace DownloadManager
 {
@@ -26,7 +28,6 @@ namespace DownloadManager
 
             services.AddServices();
 
-            // Not sure if this is necessary...
             services.AddControllers();
             services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/public");
 
@@ -36,13 +37,15 @@ namespace DownloadManager
             {
                 options.AddDefaultPolicy(policy =>
                 {
-                    policy.AllowAnyOrigin()
+                    policy.WithOrigins("http://localhost:5000")
                           .AllowAnyMethod()
-                          .AllowAnyHeader();
+                          .AllowAnyHeader()
+                          .AllowCredentials();
                 });
             });
 
-            services.AddHealthChecks();
+            services.AddSignalR();
+            services.AddHostedService<PollService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,7 +63,6 @@ namespace DownloadManager
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -80,8 +82,7 @@ namespace DownloadManager
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-
-                endpoints.MapHealthChecks("/api/health");
+                endpoints.MapHub<DownloadHub>("/api/hubs/downloads");
             });
 
             app.UseSpa(spa =>

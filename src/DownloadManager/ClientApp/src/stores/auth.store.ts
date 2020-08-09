@@ -1,6 +1,7 @@
 import { writable } from "svelte/store";
 import { http } from "../services/http.service";
 import type { AxiosResponse } from "axios";
+import { connection } from "./ws.store";
 
 export interface User {
   accessToken: string;
@@ -13,54 +14,61 @@ function createCurrentUser() {
     refreshToken: localStorage.getItem("refresh-token"),
   });
 
-  return {
-    subscribe,
-    login: async (username: string, password: string): Promise<boolean> => {
-      const tokens = await login(username, password);
-      if (tokens) {
-        update((user) => {
-          user.accessToken = tokens.accessToken;
-          user.refreshToken = tokens.refreshToken;
-          return user;
+  if (isLoggedIn()) {
+    connection.connect();
+  }
+
+  async function login(username: string, password: string): Promise<boolean> {
+    const loginSuccess = await http
+      .post<LoginRequest, AxiosResponse<TokenResponse>>("api/auth/login", {
+        username,
+        password,
+      })
+      .then((resp) => {
+        console.log(resp.status);
+        localStorage.setItem("access-token", resp.data.accessToken);
+        localStorage.setItem("refresh-token", resp.data.refreshToken);
+        return resp.data;
+      })
+      .then((tokens) => {
+        set({
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
         });
         return true;
-      }
-      return false;
-    },
-    logout: () => {
-      localStorage.removeItem("access-token");
-      localStorage.removeItem("refresh-token");
-      set(null);
-    },
-    isLoggedIn: () => {
-      let user: User;
-      subscribe((curr) => (user = curr));
-      return (
-        user !== null && user.accessToken !== null && user.refreshToken !== null
-      );
-    },
-  };
-}
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log("catching");
+        return false;
+      });
 
-async function login(
-  username: string,
-  password: string
-): Promise<TokenResponse> {
-  return await http
-    .post<LoginRequest, AxiosResponse<TokenResponse>>("api/auth/login", {
-      username,
-      password,
-    })
-    .then((tokens) => {
-      localStorage.setItem("access-token", tokens.data.accessToken);
-      localStorage.setItem("refresh-token", tokens.data.refreshToken);
-      return tokens.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      console.log("catching");
-      return null;
-    });
+    connection.connect();
+
+    return loginSuccess;
+  }
+
+  function logout() {
+    localStorage.removeItem("access-token");
+    localStorage.removeItem("refresh-token");
+    connection.disconnect();
+    set(null);
+  }
+
+  function isLoggedIn() {
+    let user: User;
+    subscribe((curr) => (user = curr));
+    return (
+      user !== null && user.accessToken !== null && user.refreshToken !== null
+    );
+  }
+
+  return {
+    subscribe,
+    login,
+    logout,
+    isLoggedIn,
+  };
 }
 
 export const user = createCurrentUser();

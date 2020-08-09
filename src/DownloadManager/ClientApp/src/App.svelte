@@ -4,18 +4,29 @@
 
   import Login from "./pages/Login.svelte";
   import Dashboard from "./pages/Dashboard.svelte";
+  import Settings from "./pages/Settings.svelte";
 
   function conditionsFailed(event: any): void {
     replace(event.detail.redirectUrl);
   }
 
+  function requiresAuth(detail: any): boolean {
+    detail.redirectUrl = "/login";
+    return user.isLoggedIn();
+  }
+
   const routes = {
     "/": wrap(Dashboard, (detail: any) => {
-      detail.redirectUrl = "/login";
-      return user.isLoggedIn();
+      return requiresAuth(detail);
     }),
     "/login": wrap(Login, (detail: any) => {
-      detail.redirectUrl = "/";
+      detail.redirectUrl = "/dashboard";
+      return !user.isLoggedIn();
+    }),
+    "/settings": wrap(Settings, (detail: any) => {
+      return requiresAuth(detail);
+    }),
+    "*": wrap(Login, (detail: any) => {
       return !user.isLoggedIn();
     }),
   };

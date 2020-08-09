@@ -1,31 +1,48 @@
 <script lang="ts">
   import DownloadCard from "../components/DownloadCard.svelte";
-  import { tryDecodeLink } from "../services/download-manager.service";
-  import Navbar from "../components/Navbar.svelte";
+  import {
+    tryDecodeLink,
+    isValidHttpUrl,
+  } from "../services/download-manager.service";
+  import type { Download } from "../services/download-manager.service";
 
-  let downloads: string[] = [];
-  let downloadLink: string;
+  import Navbar from "../components/Navbar.svelte";
+  import { connection } from "../stores/ws.store";
+  import { onMount, onDestroy } from "svelte";
+
+  let downloads: Download[] = [];
+  let downloadLink: string = "";
+
+  function progressHandler(val: Download) {
+    if (downloads.some((x) => x.fileName === val.fileName)) {
+      const index = downloads.findIndex((x) => x.fileName === val.fileName);
+      downloads = [
+        ...downloads.slice(0, index),
+        val,
+        ...downloads.slice(index + 1),
+      ];
+    } else {
+      console.log("sorting");
+      downloads = [...downloads, val];
+      downloads = downloads.sort((a: Download, b: Download) => {
+        return a.startDate.getTime() - b.startDate.getTime();
+      });
+    }
+  }
+
+  onMount(() => {
+    console.log("adding handler");
+    $connection.on("progress", progressHandler);
+  });
+
+  onDestroy(() => {
+    console.log("removing handler");
+    $connection.off("progress", progressHandler);
+  });
 
   function onBlur() {
     console.log("blur");
     downloadLink = tryDecodeLink(downloadLink) ?? downloadLink;
-  }
-
-  function isValidHttpUrl(link: string) {
-    let url: URL;
-
-    try {
-      url = new URL(link);
-    } catch (_) {
-      return false;
-    }
-
-    console.log(url);
-
-    return (
-      (url.protocol === "http:" || url.protocol === "https:") &&
-      url.host === "mega.nz"
-    );
   }
 
   $: disabled = !isValidHttpUrl(downloadLink);
