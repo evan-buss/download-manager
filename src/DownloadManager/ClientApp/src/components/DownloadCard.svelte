@@ -61,7 +61,12 @@
       <p class="text-sm text-gray-700">
         {moment(download.startDate).fromNow()}
       </p>
-      <div class="shadow-sm w-full bg-gray-100 mt-3 rounded-full stripes">
+      <div
+        class="shadow-sm w-full bg-gray-100 mt-3 rounded-full stripes"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow={$progress}>
         <div
           class="bg-teal-400 text-sm leading-none py-1 text-center text-white
           rounded-full"

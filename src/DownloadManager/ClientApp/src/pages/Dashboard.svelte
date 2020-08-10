@@ -9,6 +9,8 @@
   import Navbar from "../components/Navbar.svelte";
   import { connection } from "../stores/ws.store";
   import { onMount, onDestroy } from "svelte";
+  import { httpClient } from "../services/http.service";
+  import { user } from "../stores/auth.store";
 
   let downloads: Download[] = [];
   let downloadLink: string = "";
@@ -30,9 +32,16 @@
     }
   }
 
-  onMount(() => {
+  onMount(async () => {
     console.log("adding handler");
     $connection.on("progress", progressHandler);
+    await httpClient
+      .get("api/download", {
+        headers: { Authorization: "Bearer " + $user.accessToken },
+      })
+      .then((resp) => {
+        console.log(resp);
+      });
   });
 
   onDestroy(() => {
@@ -49,10 +58,10 @@
 </script>
 
 <Navbar />
-<div class="flex justify-center w-screen mt-20">
-  <main class="flex-col items-center w-full mx-4 lg:w-1/2">
+<div class="flex flex-col justify-center w-screen mt-16">
+  <div class="bg-white h-48 flex items-center">
     <form
-      class="flex flex-row justify-center"
+      class="flex flex-row justify-center w-full mx-4 lg:mx-auto lg:w-1/2"
       on:submit={() => console.log('submitted')}>
       <input
         class="w-full mt-2 py-2 px-4 bg-white text-gray-700 rounded
@@ -64,6 +73,8 @@
         placeholder="Download Link" />
       <button type="submit" class="btn" {disabled}>Download</button>
     </form>
+  </div>
+  <main class="flex-col items-center w-full mx-4 lg:mx-auto lg:w-1/2">
     <div class="mx-auto">
       {#each downloads as download}
         <DownloadCard {download} />

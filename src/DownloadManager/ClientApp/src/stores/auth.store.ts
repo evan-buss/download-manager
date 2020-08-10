@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { http } from "../services/http.service";
+import { httpClient } from "../services/http.service";
 import type { AxiosResponse } from "axios";
 import { connection } from "./ws.store";
 
@@ -19,7 +19,7 @@ function createCurrentUser() {
   }
 
   async function login(username: string, password: string): Promise<boolean> {
-    const loginSuccess = await http
+    const loginSuccess = await httpClient
       .post<LoginRequest, AxiosResponse<TokenResponse>>("api/auth/login", {
         username,
         password,
