@@ -1,0 +1,56 @@
+<main class="h-screen flex justify-center items-center bg-gray-700">
+  <div *ngIf="loginFailed" class="fixed top-0 mt-6">
+    <!-- <AlertMessage type="error" message="Invalid credentials. Login Failed." /> -->
+  </div>
+
+  <div
+       class="bg-white w-full max-w-sm rounded-lg shadow-lg hover:shadow-xl
+    overflow-hidden mx-auto">
+    <div class="py-4 px-6">
+      <div class="text-center font-bold text-black text-3xl">
+        Download Manager
+      </div>
+      <div class="mt-1 text-center text-gray-600">Login or create account</div>
+      <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+        <div class="mt-4 w-full">
+          <input
+                 formControlName="username"
+                 placeholder="Username"
+                 class="w-full mt-2 py-2 px-4 bg-gray-100 text-gray-700 border-2
+            border-gray-400 rounded block appearance-none placeholder-gray-500
+            focus:outline-none focus:bg-white focus:border-black" />
+          <p *ngIf="username.touched && username.errors?.required" class="text-red-600 text-sm mt-1">
+            Username is <strong>required.</strong></p>
+        </div>
+        <div class="mt-4 w-full">
+          <input
+                 formControlName="password"
+                 type="password"
+                 minlength="8"
+                 placeholder="Password"
+                 class="w-full mt-2 py-2 px-4 bg-gray-100 text-gray-700 border-2
+            border-gray-400 rounded block appearance-none placeholder-gray-500
+            focus:outline-none focus:bg-white focus:border-black" />
+          <p *ngIf="password.touched && password.errors?.required" class="text-red-600 text-sm mt-1">
+            Password is <strong>required.</strong>
+          </p>
+          <p *ngIf="password.touched && password.errors?.minlength" class="text-red-600 text-sm mt-1">
+            Password has a minimum length of <strong>8</strong> characters.
+          </p>
+        </div>
+        <div class="flex justify-between items-center mt-1">
+          <a href="/reset" class="text-gray-600 text-sm hover:text-gray-500">
+            Forgot Password?
+          </a>
+          <button type="submit" [disabled]="loginForm.invalid || loginForm.pristine" class="btn">Login</button>
+        </div>
+      </form>
+    </div>
+    <div class="flex items-center justify-center py-4 bg-gray-100 text-center">
+      <h1 class="text-gray-600 text-sm">Dont`t have an account?</h1>
+      <div class="text-teal-400 font-bold mx-2 text-sm hover:text-blue-500">
+        Register
+      </div>
+    </div>
+  </div>
+</main>

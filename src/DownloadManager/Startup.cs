@@ -28,7 +28,7 @@ namespace DownloadManager
             services.AddServices();
 
             services.AddControllers();
-            services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/public");
+            services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/dist/ClientApp");
 
             services.AddJwtAuthentication(Configuration["Secret"]);
 

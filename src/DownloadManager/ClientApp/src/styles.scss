@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+.btn {
+  @apply mt-2 py-2 px-4 bg-white text-gray-700 rounded block appearance-none border-2 border-teal-300;
+}
+
+.btn:focus {
+  @apply outline-none;
+}
+
+.btn::placeholder {
+  @apply text-gray-100;
+}
+
+.btn:hover {
+  @apply bg-teal-400 text-white;
+}
+
+.btn:disabled {
+  @apply bg-gray-100 border-gray-400 text-gray-400;
+}
