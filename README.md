@@ -1,6 +1,7 @@
 # download-manager
 Self hosted application that handles a variety of file downloads.
 
+![.NET Core](https://github.com/evan-buss/download-manager/workflows/.NET%20Core/badge.svg?branch=master)
 
 ## Intial Features
 - Initial support for MEGA.NZ downloads
