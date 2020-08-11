@@ -26,9 +26,10 @@ Self hosted application that handles a variety of file downloads.
 - Email on download completion
 
 ## Technology
-- Svelte w/ Typescript
+- Angular 10
 - Tailwind CSS
 - .Net Core 3.1
   - Dapper
+  - EF Core
   - SQLite
   - SignalR
