@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [ master ]
 
+defaults:
+  run:
+    working-directory: ./src/DownloadManager/ClientApp
+
 jobs:
   build:
 
@@ -25,6 +29,4 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-    - working-directory: ./src/DownloadManager/ClientApp
     - run: npm test
-    - working-directory: ./src/DownloadManager/ClientApp
