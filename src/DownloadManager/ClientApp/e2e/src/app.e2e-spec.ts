@@ -1,5 +1,5 @@
 import { AppPage } from './app.po';
-import { browser, logging } from 'protractor';
+import { browser, logging, element, by } from 'protractor';
 
 describe('workspace-project App', () => {
   let page: AppPage;
@@ -10,7 +10,8 @@ describe('workspace-project App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('ClientApp app is running!');
+    // expect(page.getTitleText()).toEqual('ClientApp app is running!');
+    expect(element(by.id('username')).getAttribute('placeholder')).toBe('Username')
   });
 
   afterEach(async () => {

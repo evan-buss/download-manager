@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardPageComponent } from './dashboard-page.component';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 
 describe('DashboardPageComponent', () => {
   let component: DashboardPageComponent;
@@ -8,9 +9,11 @@ describe('DashboardPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardPageComponent ]
+      declarations: [DashboardPageComponent],
+      providers: [],
+      imports: [ReactiveFormsModule]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

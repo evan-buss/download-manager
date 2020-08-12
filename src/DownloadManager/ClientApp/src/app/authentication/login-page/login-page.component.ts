@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   Validators,
-  FormGroup,
-  FormControl,
   AbstractControl,
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,11 +19,11 @@ export class LoginPageComponent implements OnInit {
   });
 
   get username(): AbstractControl {
-    return this.loginForm.get('username');
+    return this.loginForm.controls.username;
   }
 
   get password(): AbstractControl {
-    return this.loginForm.get('password');
+    return this.loginForm.controls.password;
   }
 
   constructor(private fb: FormBuilder, private router: Router) { }
