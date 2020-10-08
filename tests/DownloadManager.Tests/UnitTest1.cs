@@ -8,11 +8,9 @@ namespace DownloadManager.Tests
     {
         [Theory]
         [AutoData]
-        public void Test1(LoginRequest request)
+        public void Test1()
         {
-            request.Password = "Evan";
-
-            Assert.Equal("Evan", request.Password);
+            Assert.True(false);
         }
     }
 }

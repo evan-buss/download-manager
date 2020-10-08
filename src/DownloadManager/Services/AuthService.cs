@@ -1,7 +1,6 @@
 ﻿using DownloadManager.Data.Entities;
 using DownloadManager.Entities;
 using DownloadManager.Models;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -32,7 +31,7 @@ namespace DownloadManager.Services
 
         public async Task<TokenResponse> LogIn(LoginRequest model)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == model.Username).ConfigureAwait(false);
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.FirstName == model.Username).ConfigureAwait(false);
             if (user == null) return null;
 
             if (!VerifyPassword(model.Password, user.Password)) return null;
@@ -76,7 +75,7 @@ namespace DownloadManager.Services
 
             var user = new User
             {
-                Username = model.Username,
+                FirstName = model.Username,
                 Password = password,
                 RefreshToken = refreshToken,
                 RefreshTokenExpiration = DateTime.Now.AddMinutes(10)
@@ -100,7 +99,7 @@ namespace DownloadManager.Services
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.Username),
+                    new Claim(ClaimTypes.NameIdentifier, user.FirstName),
                     new Claim("id", user.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(10),
@@ -130,7 +129,7 @@ namespace DownloadManager.Services
 
         private bool UsernameTaken(string username)
         {
-            return _context.Users.Any(x => x.Username == username);
+            return _context.Users.Any(x => x.FirstName == username);
         }
     }
 }
